@@ -1,0 +1,91 @@
+/* @import './curtain-animation';
+
+#starter {
+  z-index: 11111;
+  position: absolute;
+  width: 300px;
+  height: 200px;
+  top: 35%;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+}
+
+#starter-img {
+  filter: drop-shadow(10px 10px 0px #5a0101) !important;
+}
+#starter.fade-out {
+  -webkit-animation: fade-out 0.3s ease-in 0s 1 normal forwards;
+  animation: fade-out 0.3s ease-in 0s 1 normal forwards;
+}
+
+#scene {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: inherit;
+  -webkit-box-shadow: 0 0 2px #ffffff inset;
+  box-shadow: 0 0 2px #ffffff inset;
+  z-index: 1111;
+}
+#scene.expand {
+  background-color: inherit;
+  box-shadow: 0 0 0 0 #ffffff inset;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  -webkit-animation-duration: 2.5s, 1.5s;
+  animation-duration: 2.5s, 1.5s;
+  -webkit-animation-timing-function: ease-in-out, ease-in-out;
+  animation-timing-function: ease-in-out, ease-in-out;
+  -webkit-animation-delay: 0s, 2.5s;
+  animation-delay: 0s, 2.5s;
+  -webkit-animation-iteration-count: 1, 1;
+  animation-iteration-count: 1, 1;
+  -webkit-animation-direction: normal, normal;
+  animation-direction: normal, normal;
+}
+
+#curtain {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: transparent;
+}
+#curtain .left,
+#curtain .right {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100vh;
+  background-image: url('./curtain.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+#curtain .left {
+  left: 0;
+  transform-origin: top right;
+}
+#curtain .right {
+  left: 50%;
+  transform-origin: top left;
+}
+#curtain.open .left {
+  animation-fill-mode: forwards;
+  animation-name: left-curtain-opening;
+  animation-duration: 2s, 4s;
+  animation-timing-function: ease-in-out, ease-in-out;
+  animation-delay: 0s, 0s;
+  animation-iteration-count: 1, 1;
+  animation-direction: normal, normal;
+}
+#curtain.open .right {
+  animation-fill-mode: forwards;
+  animation-name: right-curtain-opening;
+  animation-duration: 2s, 4s;
+  animation-timing-function: ease-in-out, ease-in-out;
+  animation-delay: 0s, 0s;
+  animation-iteration-count: 1, 1;
+  animation-direction: normal, normal;
+} */
