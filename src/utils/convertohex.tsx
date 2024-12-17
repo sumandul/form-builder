@@ -16,9 +16,7 @@ const colorToHex = (color: {
   s?: number;
   l?: number;
 }): string => {
-  console.log(color.r, "color", color);
   if (color.r !== undefined && color.g !== undefined && color.b !== undefined) {
-    // RGB to HEX
     const toHex = (value: number) => value.toString(16).padStart(2, "0");
     return `#${toHex(color.r)}${toHex(color.g)}${toHex(color.b)}`.toUpperCase();
   } else if (
@@ -59,8 +57,3 @@ const colorToHex = (color: {
 };
 
 export default colorToHex;
-
-// Example usage (in another file):
-// import colorToHex from './colorConverter';
-// const hexColorRgb = colorToHex({ r: 255, g: 0, b: 128 }); // "#FF0080"
-// const hexColorHsl = colorToHex({ h: 330, s: 0.75, l: 0.5 }); // "#FF4080"

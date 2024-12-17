@@ -3,7 +3,7 @@ import createSagaMiddleware from "redux-saga";
 
 import loader from "./slices/loader";
 import common from "./slices/common";
-import rootSaga from "./sagas";
+import rootSaga from "./sagas/index";
 
 // Create the Saga middleware
 const sagaMiddleware = createSagaMiddleware();
@@ -20,7 +20,6 @@ const store = configureStore({
       middleware
     ),
   // Explicitly enable Redux DevTools (optional since RTK does it automatically)
-  devTools: "development",
 });
 
 // Run root Saga

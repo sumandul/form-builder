@@ -1,17 +1,30 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "../../common/FormUI";
 import { useTypedDispatch } from "../../../store/hooks";
 import { setPasswordPattern } from "../../../store/actions/password";
 
-const PasswordForm = () => {
+interface Pattern {
+  id?: string;
+  label?: string;
+  value: string;
+}
+
+interface FormData {
+  minLength: number;
+  maxLength: number;
+  pattern: string;
+}
+
+const PasswordForm: React.FC = () => {
   const dispatch = useTypedDispatch();
+
   // Predefined patterns
-  const patterns = [
-    { id: "alphanumeric", label: "Alphanumeric only", value: "a-zA-Z0-9" },
-    { id: "numbers", label: "Numbers only", value: "\\d" },
-    { id: "lowercase", label: "Lowercase letters only", value: "a-z" },
-    { id: "uppercase", label: "Uppercase letters only", value: "A-Z" },
+  const patterns: Pattern[] = [
+    { id: "alphanumeric", label: "Alphanumeric ", value: "a-zA-Z0-9" },
+    { id: "numbers", label: "Numbers ", value: "\\d" },
+    { id: "lowercase", label: "Lowercase letters", value: "a-z" },
+    { id: "uppercase", label: "Uppercase letters ", value: "A-Z" },
     {
       id: "alphanumericSpecial",
       label: "Alphanumeric + special characters",
@@ -19,114 +32,147 @@ const PasswordForm = () => {
     },
   ];
 
-  const [selectedPatterns, setSelectedPatterns] = useState([]); // Store selected patterns
-  const [customPatternError, setCustomPatternError] = useState("");
+  const [selectedPatterns, setSelectedPatterns] = useState<Pattern[]>([]);
+  const [customPatternError, setCustomPatternError] = useState<string>("");
 
   // Combine selected patterns into a single regex dynamically
-  const combinedPattern = selectedPatterns.length
-    ? `^[${selectedPatterns.join("")}]+$`
+  const combinedPattern: any = selectedPatterns.length
+    ? `^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?:[a-zA-Z0-9${selectedPatterns.map(
+        (pattern) => pattern.value
+      )}]+)$`
     : undefined;
 
-  // Config with dynamic pattern
-  const config = {
-    min: 4,
-    max: 64,
-    defaultMin: 8,
-    defaultMax: 16,
-    pattern: combinedPattern ? new RegExp(combinedPattern) : undefined,
-    patternMessage: "Your input does not match the selected patterns.",
-  };
+  console.log(combinedPattern, "combinedPattern");
 
-  // const passwordSchema = createPasswordSchema(config);
-  // useEffect(() => {
-  //   dispatch(setPasswordPattern({ message: "hello" }));
-  // }, []);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  // console.log(errors);
-  const handlePatternChange = (e) => {
-    const { value, checked } = e.target;
+  } = useForm<FormData>({
+    mode: "onBlur",
+    criteriaMode: "all",
+  });
+
+  // Handle Pattern Change
+  const handlePatternChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked, dataset } = e.target;
+
+    const pattern: Pattern = { value, label: dataset.label };
 
     if (checked) {
-      setSelectedPatterns((prev) => [...prev, value]);
+      setSelectedPatterns((prev) => [...prev, pattern]);
     } else {
       setSelectedPatterns((prev) =>
-        prev.filter((pattern) => pattern !== value)
+        prev.filter((p) => p.value !== pattern.value)
       );
     }
 
     try {
       new RegExp(combinedPattern); // Validate regex
-      setCustomPatternError(""); // Clear error if valid
+      setCustomPatternError("");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
-      setCustomPatternError("Invalid regex pattern."); // Show error if invalid
+      setCustomPatternError("Invalid regex pattern.");
     }
   };
 
-  const onSubmit = (data) => {
-    console.log(data, "data");
-    dispatch(setPasswordPattern(data));
+  const onSubmit = (data: FormData) => {
+    // Pass label + value of selected patterns
+    const payload: any = {
+      ...data,
+      message: selectedPatterns.map((pattern) => pattern.label).join(", "),
+      combinedPattern: combinedPattern || undefined, // Explicitly handle undefined
+    };
+
+    dispatch(setPasswordPattern(payload));
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <h5>Password Settings</h5>
+    <div className=" p-3">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <h5>Password Settings</h5>
 
-      <div>
-        <label>Minimum Password Length</label>
-        <input type="number" {...register("minLength")} />
-        {errors.minLength && (
-          <p className="error">{errors.minLength.message}</p>
-        )}
-      </div>
-
-      <div>
-        <label>Maximum Password Length</label>
-        <input type="number" {...register("maxLength")} />
-        {errors.maxLength && (
-          <p className="error">{errors.maxLength.message}</p>
-        )}
-      </div>
-
-      <div>
-        <h6>Select Password Patterns:</h6>
-        {patterns.map((pattern) => (
-          <div key={pattern.id}>
-            <label>
-              <input
-                type="checkbox"
-                name="pattern"
-                value={pattern.value} /*  */
-                onChange={handlePatternChange}
-              />
-              {pattern.label}
-            </label>
-          </div>
-        ))}
-      </div>
-
-      {customPatternError && <p className="error">{customPatternError}</p>}
-
-      {combinedPattern && (
-        <div>
-          <label>Combined Password Pattern</label>
-          <Input
-            type="text"
-            {...register("pattern")}
-            readOnly
-            value={combinedPattern}
+        <div className=" flex flex-col">
+          <label>Minimum Password Length</label>
+          <input
+            type="number"
+            {...register("minLength")}
+            className="mb-4  border-2 border-gray-300 p-2 rounded"
           />
-          {errors.pattern && <p className="error">{errors.pattern.message}</p>}
+          {errors.minLength && (
+            <p className="error">{errors.minLength.message}</p>
+          )}
         </div>
-      )}
 
-      <button type="submit" disabled={!!customPatternError}>
-        Save Settings
-      </button>
-    </form>
+        <div className=" flex flex-col">
+          <label>Maximum Password Length</label>
+          <input
+            type="number"
+            {...register("maxLength")}
+            className="mb-4  border-2 border-gray-300 p-2 rounded"
+          />
+          {errors.maxLength && (
+            <p className="error">{errors.maxLength.message}</p>
+          )}
+        </div>
+
+        <div>
+          <h6>Select Password Patterns:</h6>
+          {patterns.map((pattern) => (
+            <div key={pattern.id} className=" flex flex-col  gap-5 my-5">
+              <label>
+                <input
+                  type="checkbox"
+                  name="pattern"
+                  value={pattern.value}
+                  data-label={pattern.label} // Send the label using dataset
+                  onChange={handlePatternChange}
+                />
+                <span className=" ml-2"> {pattern.label}</span>
+              </label>
+            </div>
+          ))}
+        </div>
+
+        {customPatternError && <p className="error">{customPatternError}</p>}
+
+        {combinedPattern && (
+          <div>
+            <label>Combined Password Pattern</label>
+            <Input
+              type="text"
+              {...register("pattern")}
+              readOnly
+              value={combinedPattern}
+            />
+            {errors.pattern && (
+              <p className="error">{errors.pattern.message}</p>
+            )}
+          </div>
+        )}
+
+        {selectedPatterns.length > 0 && (
+          <div>
+            <h6>Selected Patterns:</h6>
+            <ul>
+              {selectedPatterns.map((pattern, index) => (
+                <li key={index}>
+                  {pattern.label} ({pattern.value})
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <button
+          type="submit"
+          className=" bg-blue-500 text-white rounded-md  mt-2 p-1"
+          disabled={!!customPatternError}
+        >
+          Save Settings
+        </button>
+      </form>
+    </div>
   );
 };
 

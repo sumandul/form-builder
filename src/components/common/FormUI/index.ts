@@ -1,8 +1,3 @@
-import Label from './Label';
-import Input from './Input';
-import Select from './Select';
-import MultiSelect from './MultiSelect';
-import FormGroup from './FormGroup';
-import FormControl from './FormControl';
+import Input from "./Input";
 
-export { Label, Input, Select, MultiSelect, FormControl, FormGroup };
+export { Input };

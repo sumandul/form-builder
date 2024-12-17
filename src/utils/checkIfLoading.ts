@@ -1,8 +1,8 @@
-import { RootState } from '@Store/index';
+import { RootState } from "../store";
 
 export default function checkIfLoading(
   store: RootState,
-  actionsToCheck: string[],
+  actionsToCheck: string[]
 ) {
-  return store.loader.actions.some(action => actionsToCheck.includes(action));
+  return store.loader.actions.some((action) => actionsToCheck.includes(action));
 }
