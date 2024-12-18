@@ -31,7 +31,7 @@ export default function FormBuilder() {
   const { register } = useForm();
 
   const [openPasswordSetting, setOpenPasswordSetting] = useState(false);
-
+  const [formTitle, setFormTitle] = useState("formtitle");
   const [buttonText, setButtonText] = useState("Save");
   const [buttonAlignment, setButtonAlignment] = useState("center");
   const [buttonRadius, setButtonRadius] = useState(30);
@@ -150,70 +150,82 @@ export default function FormBuilder() {
       <div className="bg-[#D9EAFD] flex items-center justify-center min-h-[15rem]">
         <h1 className="text-[2rem] font-bold">Form Builder</h1>
       </div>
-      <div className="p-20">
-        <div className="flex gap-10">
+      <div className=" px-3 sm:p-20">
+        <div className="flex flex-col  md:flex-row gap-10   ">
           {/* Form Style Section */}
-          <div className="basis-1/2">
+          <div className=" basis-[100%] sm:basis-1/2">
             {/* <h4 className="text-center font-medium text-xl">Form Style</h4> */}
             <div>
-              <div className="w-full flex  gap-3 items-start  ">
+              <div className="w-full mt-4 flex flex-wrap gap-3 items-start">
                 <div>
                   <label
                     htmlFor="single"
-                    className=" bg-blue-300 w  text-white px-4 py-2 mb-4"
+                    className="bg-blue-300 text-white px-4 py-2 mb-4"
                     onClick={() => toggleColumnView("single")}
                   >
                     Single Column{" "}
-                    <input id="single" type="radio" name="column" />
+                    <input
+                      id="single"
+                      type="radio"
+                      name="column"
+                      defaultChecked
+                    />
                   </label>
                 </div>
                 <div>
                   <label
                     htmlFor="multi"
-                    className="bg-blue-300 text-white px-4 py-2 mb-4 "
+                    className="bg-blue-300 text-white px-4 py-2 mb-4"
                     onClick={() => toggleColumnView("multicolumn")}
                   >
-                    multi Column <input id="multi" type="radio" name="column" />
+                    Multi Column <input id="multi" type="radio" name="column" />
                   </label>
                 </div>
               </div>
             </div>
-            <div className="   mt-5 ">
-              <div className=" w-full flex gap-2 items-start  ">
+            <div className="mt-5">
+              <div className="w-full flex flex-wrap gap-4 items-start">
                 {isMultiColumn.multiColumn && (
-                  <Input
-                    name="column"
-                    type="text"
-                    label="Number of columns"
-                    placeholder="Enter number of columns"
-                    className="mb-4  border-2 border-gray-300 p-2 rounded"
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      setColumns(e.target.value)
-                    }
-                  />
+                  <div className="w-full sm:w-1/2 lg:w-1/3">
+                    <Input
+                      name="column"
+                      type="text"
+                      label="Number of columns"
+                      placeholder="Enter number of columns"
+                      className="mb-4 border-2 border-gray-300 p-2 rounded w-full"
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        setColumns(e.target.value)
+                      }
+                    />
+                  </div>
                 )}
 
-                <div className=" flex gap-4">
-                  <Input
-                    name="formtitle"
-                    placeholder=" Enter Form title"
-                    label="Form title"
-                    className="mb-4  border-2 border-gray-300 p-2 rounded"
-                  />
-                  <div className=" flex items-center gap-3">
-                    {" "}
+                <div className="w-full lg:w-auto flex flex-wrap gap-4">
+                  <div className="w-full sm:w-1/2 lg:w-auto">
                     <Input
-                      name="buttonText"
-                      onChange={(e) => setButtonText(e.target.value)}
-                      label="Button Text"
-                      placeholder=" Enter button text"
-                      className="mb-4  border-2 border-gray-300 p-2 rounded"
+                      name="formtitle"
+                      placeholder="Enter Form Title"
+                      label="Form Title"
+                      onChange={(e) => setFormTitle(e.target.value)}
+                      className="mb-4 border-2 border-gray-300 p-2 rounded w-full"
                     />
+                  </div>
+
+                  <div className="w-full sm:w-1/2 lg:w-auto flex items-center gap-4">
+                    <div className="w-full sm:w-auto">
+                      <Input
+                        name="buttonText"
+                        onChange={(e) => setButtonText(e.target.value)}
+                        label="Button Text"
+                        placeholder="Enter Button Text"
+                        className="mb-4 border-2 border-gray-300 p-2 rounded w-full"
+                      />
+                    </div>
+
                     <Popover open={open} onOpenChange={setOpen}>
                       <PopoverTrigger>
                         <span
-                          // ref={deleteRef}
-                          className="material-symbols-outlined "
+                          className="material-symbols-outlined cursor-pointer"
                           onClick={() => setOpen(!open)}
                         >
                           settings
@@ -229,7 +241,6 @@ export default function FormBuilder() {
                         />
                       </PopoverContent>
                     </Popover>
-                    <div className=" relative"></div>
                   </div>
                 </div>
               </div>
@@ -239,13 +250,14 @@ export default function FormBuilder() {
               {fields.map((field) => (
                 <div
                   key={field.id}
-                  className="flex gap-5 items-center bg-gray-50 p-2 rounded shadow mb-4"
+                  className="flex  flex-wrap md:flex-nowrap gap-5 items-center bg-gray-50 p-4 rounded shadow mb-4"
                 >
-                  <div>
-                    <label className="capitalize text-base">Field Type</label>
-
+                  <div className="w-full sm:w-1/2 lg:w-1/4">
+                    <label className="capitalize text-base block mb-1">
+                      Field Type
+                    </label>
                     <select
-                      className="border p-2 rounded"
+                      className="border p-2 rounded w-full"
                       onChange={(e) =>
                         updateField(field.id, "type", e.target.value)
                       }
@@ -262,84 +274,93 @@ export default function FormBuilder() {
                       ))}
                     </select>
                   </div>
-                  <Input
-                    name="label"
-                    type="text"
-                    placeholder=" Enter Label"
-                    label="Label Text"
-                    className="mb-4  border-2 border-gray-300 p-2 rounded"
-                    onChange={(e) =>
-                      updateField(field.id, "label", e.target.value)
-                    }
-                  />
-                  {field.type !== "checkbox" && (
+
+                  <div className="w-full sm:w-1/2 lg:w-1/4">
                     <Input
-                      name="placeholder"
+                      name="label"
                       type="text"
-                      placeholder=" Enter Placeholer"
-                      label="Placeholder Text"
-                      className="mb-4  border-2 border-gray-300 p-2 rounded"
+                      placeholder="Enter Label"
+                      label="Label Text"
+                      className="border-2 border-gray-300 p-2 rounded w-full"
                       onChange={(e) =>
-                        updateField(field.id, "placeholder", e.target.value)
+                        updateField(field.id, "label", e.target.value)
                       }
                     />
+                  </div>
+
+                  {field.type !== "checkbox" && (
+                    <div className="w-full sm:w-1/2 lg:w-1/4">
+                      <Input
+                        name="placeholder"
+                        type="text"
+                        placeholder="Enter Placeholder"
+                        label="Placeholder Text"
+                        className="border-2 border-gray-300 p-2 rounded w-full"
+                        onChange={(e) =>
+                          updateField(field.id, "placeholder", e.target.value)
+                        }
+                      />
+                    </div>
                   )}
 
-                  <div className=" flex items-center gap-2">
+                  <div className="flex items-center gap-2 w-full sm:w-1/2 lg:w-1/4">
                     <Input
                       name="required"
                       type="checkbox"
                       checked={field.required}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      onChange={(e) =>
                         updateField(field.id, "required", e.target.checked)
                       }
                     />
                     <span>Required</span>
                   </div>
-                  <button
-                    className="text-red-500"
-                    onClick={() => removeField(field.id)}
-                  >
-                    <span className="material-symbols-outlined">delete</span>
-                  </button>
-                  {field.type === "password" && (
-                    <Popover
-                      open={openPasswordSetting}
-                      onOpenChange={setOpenPasswordSetting}
+
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <button
+                      className="text-red-500"
+                      onClick={() => removeField(field.id)}
                     >
-                      <PopoverTrigger>
-                        <span
-                          // ref={deleteRef}
-                          className="material-symbols-outlined "
-                          onClick={() => setOpenPasswordSetting(!open)}
-                        >
-                          settings
-                        </span>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-full bg-white !p-[0px]">
-                        <PasswordSetting
-                        // setOpenPasswordLength={setOpenPasswordSetting}
-                        // passwordLength={passwordLength}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  )}
+                      <span className="material-symbols-outlined">delete</span>
+                    </button>
+                    {field.type === "password" && (
+                      <Popover
+                        open={openPasswordSetting}
+                        onOpenChange={setOpenPasswordSetting}
+                      >
+                        <PopoverTrigger>
+                          <span
+                            className="material-symbols-outlined cursor-pointer"
+                            onClick={() => setOpenPasswordSetting(!open)}
+                          >
+                            settings
+                          </span>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full bg-white !p-[0px]">
+                          <PasswordSetting />
+                        </PopoverContent>
+                      </Popover>
+                    )}
+                  </div>
                 </div>
               ))}
-              <button
-                onClick={addNewField}
-                className="bg-blue-500 rounded-md text-white px-4 py-2 mt-4"
-              >
-                Add New Field
-              </button>
+
+              <div className="flex justify-center">
+                <button
+                  onClick={addNewField}
+                  className="bg-blue-500 rounded-md text-white px-4 py-2 mt-4"
+                >
+                  Add New Field
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Form Preview Section */}
-          <div className="basis-1/2  ">
-            <h4 className="text-center font-medium text-xl">Form Preview</h4>
-
+          <div className="basis-[100%] sm:basis-1/2 py-4  ">
             <div className=" shadow-dark rounded-xl p-5">
+              <h2 className="  font-semibold text   text-center capitalize text-2xl">
+                {formTitle}
+              </h2>
               <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="fields">
                   {(provided) => (
@@ -416,10 +437,12 @@ export default function FormBuilder() {
           </div>
         </div>
         <div>
-          <div className="  grid grid-cols-2  ">
+          <div className="mt-4">
             {savedForms.map((form, index) => (
-              <div key={index} className=" p-4 mb-4 max-h-40 ">
-                {" "}
+              <div
+                key={index}
+                className="p-4 mb-4 bg-white rounded shadow min-h-[10rem] overflow-auto"
+              >
                 <PreviewForm form={form} />
               </div>
             ))}

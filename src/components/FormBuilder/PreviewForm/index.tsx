@@ -2,19 +2,26 @@ import { useState } from "react";
 import { Input } from "../../common/FormUI";
 import generateFormCode from "../GenerateCode";
 const PreviewForm = ({ form }: any) => {
-  console.log(form, "hh");
   const [isCopied, setIsCopied] = useState(false);
+
   const handleCopyCode = (data: any) => {
-    console.log(data, "data");
     generateFormCode(data);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
+
   return (
-    <div>
-      <div className=" shadow-dark rounded-xl  flex-1 p-5 basis-1/2">
+    <div className="flex flex-col gap-4">
+      <div className="shadow rounded-xl p-5 flex-1">
         <form>
-          <div className={`grid grid-cols-${form.columns} gap-4`}>
+          <div
+            className="grid gap-4"
+            style={{
+              gridTemplateColumns: `repeat(${
+                form.columns || 1
+              }, minmax(0, 1fr))`,
+            }}
+          >
             {form?.fields?.map((field: any, id: number) => (
               <div key={id} className="flex flex-col">
                 {field.type === "text" || field.type === "password" ? (
@@ -39,31 +46,35 @@ const PreviewForm = ({ form }: any) => {
               </div>
             ))}
           </div>
-          <div className={`flex justify-${form.buttonAlignment} mt-1`}>
+          <div
+            className={`flex justify-${form.buttonAlignment} mt-4`}
+            style={{
+              justifyContent: form.buttonAlignment || "center",
+            }}
+          >
             <button
               style={{
                 backgroundColor: form.color,
                 color: form.textColor,
                 borderRadius: `${form.buttonRadius}%`,
               }}
-              className={`px-4   py-3`}
+              className="px-4 py-3"
             >
               {form.buttonText}
             </button>
           </div>
         </form>
       </div>
-      <div className="  overflow-y-auto    overflow-x-auto">
-        <pre className="bg-gray-900 text-white p-4 basis-1/2 rounded overflow-x-auto">
-          <button className=" relative" onClick={() => handleCopyCode(form)}>
-            <span className="material-symbols-outlined">content_copy</span>
-            {isCopied && (
-              <div className="mt-4 absolute top-[-1rem] right-[-20rem] text-green-600 font-semibold">
-                ✅ Code copied to clipboard!
-              </div>
-            )}
-          </button>
-
+      <div className="overflow-auto bg-gray-900 text-white p-4 rounded">
+        <button className="relative" onClick={() => handleCopyCode(form)}>
+          <span className="material-symbols-outlined">content_copy</span>
+          {isCopied && (
+            <div className="absolute top-[-1rem] right-0 text-green-600 font-semibold">
+              ✅ Code copied to clipboard!
+            </div>
+          )}
+        </button>
+        <pre>
           <code>{generateFormCode(form)}</code>
         </pre>
       </div>
